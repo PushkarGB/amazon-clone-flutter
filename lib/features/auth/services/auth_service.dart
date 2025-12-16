@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:amazon_clone/constants/error_handling.dart';
 import 'package:amazon_clone/constants/utils.dart';
 import 'package:amazon_clone/models/user.dart';
@@ -43,6 +45,36 @@ class AuthService {
       showSnackBar(context,e.toString());
     }
   }
+  void signInUser({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
+    try {
+
+      http.Response res = await http.post(
+        Uri.parse("$uri/api/signin"),
+        body: jsonEncode({
+          'email' : email,
+          'password' : password,
+        }),
+        headers: <String, String>{
+          "Content-Type": 'application/json; charset=UTF-8',
+        },
+      );
+      
+      httpErrorHandel(
+        response: res,
+        context: context,
+        onSuccess: () {
+          
+        }
+        );
+    } catch (e) {
+      showSnackBar(context,"Error : ${e.toString()}");
+    }
+  }
+
 
   //We will resolve the warning for the use of BuildContext across async gap later on.
 }

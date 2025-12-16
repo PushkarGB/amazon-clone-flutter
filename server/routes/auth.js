@@ -1,9 +1,11 @@
 const express = require("express");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const authRouter = express.Router();
 
+//SIGN UP ROUTE
 authRouter.post("/api/signup", async (req, res) => {
   try {
     //1. GET THE DATA FROM CLIENT
@@ -56,30 +58,36 @@ authRouter.post("/api/signup", async (req, res) => {
   }
 });
 
-
-//Demo just to see if we have understood the concepts , we will later on update this : 
-
+//SIGN IN ROUTE
 authRouter.post("/api/signin", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    if (!existingUser) {
+    if (!user) {
       return res.status(400).json({ msg: "User does not exists" });
     }
 
-    let msg;
-    msg = (await bcrypt.compare(password, existingUser["password"]))
-      ? "Login Successful"
-      : "Login Failed : Invalid Password!";
+    const isMatch = await bcrypt.compare(password, user.password);
 
-    res.json({ msg });
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Incorrect Password." });
+    }
+
+    const token = jwt.sign({ id: user._id }, "passwordSecretKey");
+    res.json({ token, ...user._doc });
+    /* 
+     * '...user.doc' will deconstruct the user object and finally the json will have something like this : 
+        {
+    "token": "eyJhbGci1X2mU", "_id": "69412a976d10a63b33607fb6", "name": "XYZ", "email": "demouser1@gmail.com",
+    "password": "$2b$10$JG0jcjQm8PHX6xKuWpWeG.K6gCEwb4lFXMC5qrX5qU87t2BI5Ht/m", "address": "","type": "user","__v": 0
+        } 
+     */
   } catch (e) {
     res.status(500).json({ error: e.message }); //500 - Internal Server Error
   }
 });
-
 /**
  * We use 'msg' to show validation error/issue and 'error' to show server error
  */
