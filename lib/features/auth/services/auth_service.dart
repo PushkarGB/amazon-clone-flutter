@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:amazon_clone/constants/error_handling.dart';
 import 'package:amazon_clone/constants/utils.dart';
-import 'package:amazon_clone/features/auth/screens/home_screen.dart';
+import 'package:amazon_clone/common/widgets/bottom_bar.dart';
 import 'package:amazon_clone/models/user.dart';
 import 'package:amazon_clone/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +76,7 @@ class AuthService {
           await pref.setString('x-auth-token', jsonDecode(res.body)['token']);
           Navigator.pushNamedAndRemoveUntil(
             context,
-            HomeScreen.routeName,
+            BottomBar.routeName,
             (route) => false,
           );
         },
@@ -123,7 +123,6 @@ class AuthService {
           },
         );
         Provider.of<UserProvider>(context, listen: false).setUser(userRes.body);
-        print(userRes.body);
       }
     } catch (e) {
       showSnackBar(context, "Error : ${e.toString()}");
