@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const auth = require("../middlewares/auth");
 
 const authRouter = express.Router();
 
@@ -87,6 +88,39 @@ authRouter.post("/api/signin", async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message }); //500 - Internal Server Error
   }
+});
+
+//TOKEN VALIDATION
+authRouter.post("/api/isTokenValid", async (req, res) => {
+  try {
+    //receive the token from client's request
+    const token = req.header("x-auth-token");
+
+    //if token is null , return false - not valid
+    if (!token) return res.json(false);
+
+    //if not null , verify using jwt using the secret key
+    const verified = jwt.verify(token, "passwordSecretKey");
+
+    //if not verified - invalid token
+    if (!verified) return res.json(false);
+
+    //even if verified , it can even be a random token being correct , so verify if the user also exists
+
+    const user = await User.findById(verified.id);
+    if (!user) return res.json(false);
+
+    //If token is verified and user exists , token is valid
+    return res.json(true);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+//GET USER DATA
+authRouter.get("/", auth, async (req, res) => {
+  const user = await User.findById(req.user);
+  res.json({ ...user._doc, token: req.token });
 });
 /**
  * We use 'msg' to show validation error/issue and 'error' to show server error
