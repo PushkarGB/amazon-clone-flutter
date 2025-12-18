@@ -1,4 +1,5 @@
 import 'package:amazon_clone/features/home/widgets/address_box.dart';
+import 'package:amazon_clone/features/home/widgets/carousal_image.dart';
 import 'package:amazon_clone/features/home/widgets/top_categories.dart';
 import 'package:flutter/material.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
@@ -86,6 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
           AddressBox(),
           SizedBox(height: 10,),
           TopCategories(),
+          SizedBox(height: 10,),
+          CarousalImage(),
         ],
       ),
     );
