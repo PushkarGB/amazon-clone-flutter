@@ -1,8 +1,7 @@
+import 'package:amazon_clone/config/env.dart';
 import 'package:flutter/material.dart';
 
-String myIp = "10.168.162.88";
-String uri = 'http://$myIp:3000';
-
+final String uri = Env.apiUrl;
 class GlobalVariables {
   static const appBarGradient = LinearGradient(
     colors: [

@@ -1,14 +1,14 @@
 //IMPORTS FROM PACKAGES
 const express = require("express");
 const mongoose = require("mongoose");
+require('dotenv').config();
 
 //IMPORTS FROM OTHER FILES
 const authRouter = require("./routes/auth");
 
 //INIT
-const DB =
-  "mongodb+srv://pushkarGB:push123@cluster0.d56oryt.mongodb.net/?appName=Cluster0";
-const PORT = 3000;
+const DB = process.env.MONGO_URI;
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 //MIDDLEWARE
