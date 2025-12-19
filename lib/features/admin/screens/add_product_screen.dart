@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:amazon_clone/common/widgets/custom_button.dart';
 import 'package:amazon_clone/common/widgets/custom_textField.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
+import 'package:amazon_clone/constants/utils.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +23,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   String category = "Mobiles";
+  List<File> productImages = [];
 
   @override
   void dispose() {
@@ -29,13 +34,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
     _descriptionController.dispose();
   }
 
+  List<String> productCategories = GlobalVariables.categoryImages.map((i) {
+    return i['title']!;
+  }).toList();
+
+  void selectProductImages() async {
+    var res = await pickImages();
+    setState(() {
+      productImages = res;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    List<String> productCategories = GlobalVariables.categoryImages.map((i) {
-      return i['title']!;
-    }).toList();
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
@@ -55,8 +66,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           ),
           centerTitle: true,
           // automaticallyImplyLeading: true,
-          // automaticallyImplyActions: true, --> these are by default true and because them we see that back arrow which performs Navigator.pop() on press
-          leading: Icon(Icons.arrow_back_ios_outlined, size: 18),
+          // automaticallyImplyActions: true, //--> these are by default true and because them we see that back arrow which performs Navigator.pop() on press
         ),
       ),
       body: SingleChildScrollView(
@@ -66,34 +76,51 @@ class _AddProductScreenState extends State<AddProductScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                DottedBorder(
-                  options: RoundedRectDottedBorderOptions(
-                    radius: const Radius.circular(10),
-                    dashPattern: [10, 4],
-                    strokeCap: StrokeCap.round,
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.folder_outlined, size: 40),
-                        SizedBox(height: 15),
-                        Text(
-                          "Select Product Images",
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 15,
+                productImages.isEmpty
+                    ? GestureDetector(
+                        onTap: selectProductImages,
+                        child: DottedBorder(
+                          options: RoundedRectDottedBorderOptions(
+                            radius: const Radius.circular(10),
+                            dashPattern: [10, 4],
+                            strokeCap: StrokeCap.round,
+                          ),
+                          child: Container(
+                            width: double.infinity,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.folder_outlined, size: 40),
+                                SizedBox(height: 15),
+                                Text(
+                                  "Select Product Images",
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      )
+                    : CarouselSlider(
+                        items: productImages.map((image) {
+                          return Builder(
+                            builder: (BuildContext context) => Image.file(image),
+                          );
+                        }).toList(),
+                        options: CarouselOptions(
+                          viewportFraction: 1,
+                          height: 150,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 5),
+                        ),
+                      ),
                 const SizedBox(height: 20),
                 CustomTextField(
                   controller: _productNameController,
@@ -115,17 +142,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   controller: _quantityController,
                   hintText: "Quantity",
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: DropdownButton(
                     value: category,
                     icon: Icon(Icons.keyboard_arrow_down),
                     items: productCategories.map((String item) {
-                      return DropdownMenuItem(
-                        value: item,
-                        child: Text(item)
-                        );
+                      return DropdownMenuItem(value: item, child: Text(item));
                     }).toList(),
                     onChanged: (String? newVal) {
                       setState(() {
