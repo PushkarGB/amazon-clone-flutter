@@ -111,12 +111,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     : CarouselSlider(
                         items: productImages.map((image) {
                           return Builder(
-                            builder: (BuildContext context) => Image.file(image),
+                            builder: (BuildContext context) => Image.file(
+                              image,
+                              fit:BoxFit.cover,
+                              height: 200,
+                              ),
                           );
                         }).toList(),
                         options: CarouselOptions(
                           viewportFraction: 1,
-                          height: 150,
+                          height: 200,
                           autoPlay: true,
                           autoPlayInterval: Duration(seconds: 5),
                         ),
