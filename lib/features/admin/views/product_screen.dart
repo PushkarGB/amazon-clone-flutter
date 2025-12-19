@@ -1,3 +1,4 @@
+import 'package:amazon_clone/features/admin/screens/add_product_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _ProductScreenState extends State<ProductScreen> {
         backgroundColor: const Color.fromARGB(255, 125, 221, 216),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
         tooltip: "Add a Product",
-        onPressed: () {},
+        onPressed: () => Navigator.pushNamed(context, AddProductScreen.routeName),
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
