@@ -5,7 +5,6 @@ import "package:http/http.dart" as http;
 
 void httpErrorHandel({
   required http.Response response,
-  required BuildContext context,
   required VoidCallback onSuccess,
 }) {
   switch(response.statusCode){
@@ -15,13 +14,13 @@ void httpErrorHandel({
       break;
     case 400 : 
       //Client error response - BAD REQUEST - ex. Form validation error
-      showSnackBar(context,jsonDecode(response.body)['msg']);
+      showSnackBar(jsonDecode(response.body)['msg']);
       break;
     case 500:
       //Server error Response - INTERNAL SERVER ERROR
-      showSnackBar(context,jsonDecode(response.body)['error']);
+      showSnackBar(jsonDecode(response.body)['error']);
       break;
     default :
-      showSnackBar(context,response.body);
+      showSnackBar(response.body);
   }
 }
