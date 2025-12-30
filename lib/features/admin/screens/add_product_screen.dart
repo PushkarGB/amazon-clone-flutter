@@ -4,6 +4,7 @@ import 'package:amazon_clone/common/widgets/custom_button.dart';
 import 'package:amazon_clone/common/widgets/custom_textField.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
 import 'package:amazon_clone/constants/utils.dart';
+import 'package:amazon_clone/features/admin/services/admin_services.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   String category = "Mobiles";
   List<File> productImages = [];
+  final AdminServices adminService = AdminServices();
 
   @override
   void dispose() {
@@ -43,6 +45,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
     setState(() {
       productImages = res;
     });
+  }
+
+  void addProduct() {
+    adminService.sellProduct(
+      context: context,
+      productName: _productNameController.text,
+      description: _descriptionController.text,
+      price: double.tryParse(_priceController.text)!,
+      quantity: int.tryParse(_quantityController.text)!,
+      category: category,
+      productImages: productImages,
+    );
   }
 
   @override
@@ -113,9 +127,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           return Builder(
                             builder: (BuildContext context) => Image.file(
                               image,
-                              fit:BoxFit.cover,
+                              fit: BoxFit.cover,
                               height: 200,
-                              ),
+                            ),
                           );
                         }).toList(),
                         options: CarouselOptions(
@@ -163,7 +177,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                CustomButton(text: "Add Product", onTap: () {}),
+                CustomButton(
+                  text: "Sell",
+                  onTap: () {
+                    addProduct();
+                  },
+                ),
                 const SizedBox(height: 10),
               ],
             ),
