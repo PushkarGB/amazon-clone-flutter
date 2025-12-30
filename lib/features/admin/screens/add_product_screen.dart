@@ -26,6 +26,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   String category = "Mobiles";
   List<File> productImages = [];
   final AdminServices adminService = AdminServices();
+  final _addProductFormKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -48,15 +49,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   void addProduct() {
-    adminService.sellProduct(
-      context: context,
-      productName: _productNameController.text,
-      description: _descriptionController.text,
-      price: double.tryParse(_priceController.text)!,
-      quantity: int.tryParse(_quantityController.text)!,
-      category: category,
-      productImages: productImages,
-    );
+    if (_addProductFormKey.currentState!.validate() &&
+        productImages.isNotEmpty) {
+      adminService.sellProduct(
+        context: context,
+        productName: _productNameController.text,
+        description: _descriptionController.text,
+        price: double.tryParse(_priceController.text)!,
+        quantity: int.tryParse(_quantityController.text)!,
+        category: category,
+        productImages: productImages,
+      );
+    }
   }
 
   @override
@@ -85,6 +89,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ),
       body: SingleChildScrollView(
         child: Form(
+          key: _addProductFormKey,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
