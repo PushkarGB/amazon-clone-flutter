@@ -29,6 +29,17 @@ class _ProductScreenState extends State<ProductScreen> {
     setState(() {});
   }
 
+  void deleteProduct(Product product, int index) {
+    adminServices.deleteProduct(
+      context: context,
+      product: product,
+      onSuccess: () {
+        products!.removeAt(index);
+        setState(() {});
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return products == null
@@ -58,7 +69,9 @@ class _ProductScreenState extends State<ProductScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            deleteProduct(productData, item);
+                          },
                           icon: const Icon(Icons.delete_outline),
                         ),
                       ],
