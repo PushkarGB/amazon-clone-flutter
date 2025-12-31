@@ -36,10 +36,10 @@ class Product {
       id: map['_id'] ?? '',
       productName: map['productName'] ?? '',
       description: map['description'] ?? '',
-      price: double.tryParse(map['price']) ?? 0.0,
-      quantity: int.tryParse(map['price']) ?? 0,
+      price: (map['price'] as num).toDouble(),
+      quantity: map['quantity'] as int,
       category: map['category'] ?? '',
-      productImages: map['productImages'] ?? '',
+      productImages: List<String>.from(map['productImages']),
     );
   }
 

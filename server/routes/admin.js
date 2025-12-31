@@ -40,7 +40,7 @@ adminRouter.post("/admin/add-product", admin, async (req, res) => {
 });
 
 //Get All Products
-adminRouter.get("/admin/get-product", admin, async (req, res) => {
+adminRouter.get("/admin/get-products", admin, async (req, res) => {
   try {
     const products = await Product.find(); //find() without any param returns all records
     res.json(products);
