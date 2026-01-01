@@ -6,6 +6,7 @@ require('dotenv').config();
 //IMPORTS FROM OTHER FILES
 const authRouter = require("./routes/auth");
 const adminRouter = require("./routes/admin");
+const productRouter = require("./routes/product");
 
 //INIT
 const DB = process.env.MONGO_URI;
@@ -18,6 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(authRouter);
 app.use(adminRouter);
+app.use(productRouter);
 
 //CONNECTIONS
 mongoose
